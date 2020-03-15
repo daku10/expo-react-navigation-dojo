@@ -1,7 +1,16 @@
 import React from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
+import { StyleSheet, Text, View, Button, Image } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
+
+function LogoTitle() {
+  return (
+    <Image
+      style={{ width: 50, height: 50 }}
+      source={require("./assets/icon.png")}
+    />
+  );
+}
 
 function HomeScreen({ navigation }) {
   return (
@@ -28,6 +37,12 @@ function DetailsScreen({ route, navigation }) {
       <Text>Details Screen</Text>
       <Text>itemId: {JSON.stringify(itemId)}</Text>
       <Text>otherParam: {JSON.stringify(otherParam)}</Text>
+      <Button
+        title="update title"
+        onPress={() => {
+          navigation.setOptions({ title: "Update Title!" });
+        }}
+      />
       <Button
         title="Go To Details... again"
         onPress={() => {
@@ -63,16 +78,30 @@ const Stack = createStackNavigator();
 export default function App() {
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName="Home">
+      <Stack.Navigator
+        initialRouteName="Home"
+        screenOptions={{
+          headerStyle: {
+            backgroundColor: "#f4511e"
+          },
+          headerTintColor: "#fff",
+          headerTitleStyle: {
+            fontWeight: "bold"
+          }
+        }}
+      >
         <Stack.Screen
           name="Home"
           component={HomeScreen}
-          options={{ title: "Overview" }}
+          options={{
+            headerTitle: props => <LogoTitle {...props} />
+          }}
         />
         <Stack.Screen
           name="Details"
           component={DetailsScreen}
           initialParams={{ itemId: 42 }}
+          options={({ route }) => ({ title: route.params.itemId })}
         />
       </Stack.Navigator>
     </NavigationContainer>
