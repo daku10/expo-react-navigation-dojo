@@ -1,68 +1,52 @@
 import React from "react";
+import { View, Text } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import { View, Text, Button } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
+import { Ionicons } from "@expo/vector-icons";
 
-function HomeScreen({ navigation }) {
+function HomeScreen() {
   return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Button
-        onPress={() => navigation.navigate("MyModal")}
-        title="Open Modal"
-      />
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Home!</Text>
     </View>
   );
 }
 
-function DetailsScreen() {
+function SettingsScreen() {
   return (
-    <View>
-      <Text>Details</Text>
+    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+      <Text>Settings!</Text>
     </View>
   );
 }
 
-function ModalScreen({ navigation }) {
-  return (
-    <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-      <Text style={{ fontSize: 30 }}>This is a modal!</Text>
-      <Button onPress={() => navigation.goBack()} title="Dismiss" />
-    </View>
-  );
-}
-
-const MainStack = createStackNavigator();
-const RootStack = createStackNavigator();
-
-function MainStackScreen() {
-  return (
-    <MainStack.Navigator>
-      <MainStack.Screen name="Home" component={HomeScreen} />
-      <MainStack.Screen name="Details" component={DetailsScreen} />
-    </MainStack.Navigator>
-  );
-}
-
-function RootStackScreen() {
-  return (
-    <RootStack.Navigator mode="modal">
-      <RootStack.Screen
-        name="Main"
-        component={MainStackScreen}
-        options={{ headerShown: false }}
-      />
-    </RootStack.Navigator>
-  );
-}
+const Tab = createBottomTabNavigator();
 
 export default function App() {
   return (
     <NavigationContainer>
-      <RootStack.Navigator mode="modal" headerMode="none">
-        <RootStack.Screen name="Main" component={MainStackScreen} />
-        <RootStack.Screen name="MyModal" component={ModalScreen} />
-      </RootStack.Navigator>
+      <Tab.Navigator
+        screenOptions={({ route }) => ({
+          tabBarIcon: ({ focused, color, size }) => {
+            let iconName;
+            if (route.name === "Home") {
+              iconName = focused
+                ? "ios-information-circle"
+                : "ios-information-circle-outline";
+            } else if (route.name === "Settings") {
+              iconName = focused ? "ios-list-box" : "ios-list";
+            }
+            return <Ionicons name={iconName} size={size} color={color} />;
+          }
+        })}
+        tabBarOptions={{
+          activeTintColor: "tomato",
+          inactiveTintColor: "gray"
+        }}
+      >
+        <Tab.Screen name="Home" component={HomeScreen} />
+        <Tab.Screen name="Settings" component={SettingsScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
